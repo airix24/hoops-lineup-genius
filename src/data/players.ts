@@ -8,6 +8,7 @@ export const players: Player[] = [
     position: "PG",
     spacing: 5,
     defense: 1,
+    total: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
@@ -16,6 +17,7 @@ export const players: Player[] = [
     position: "PG",
     spacing: 2,
     defense: 3,
+    total: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   // Shooting Guards
@@ -25,6 +27,7 @@ export const players: Player[] = [
     position: "SG",
     spacing: 3,
     defense: 5,
+    total: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
@@ -33,6 +36,7 @@ export const players: Player[] = [
     position: "SG",
     spacing: 4,
     defense: 4,
+    total: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   // Small Forwards
@@ -42,6 +46,7 @@ export const players: Player[] = [
     position: "SF",
     spacing: 3,
     defense: 4,
+    total: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
@@ -50,6 +55,7 @@ export const players: Player[] = [
     position: "SF",
     spacing: 5,
     defense: 2,
+    total: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   // Power Forwards
@@ -59,6 +65,7 @@ export const players: Player[] = [
     position: "PF",
     spacing: 2,
     defense: 5,
+    total: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
@@ -67,6 +74,7 @@ export const players: Player[] = [
     position: "PF",
     spacing: 5,
     defense: 2,
+    total: 4,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   // Centers
@@ -76,6 +84,7 @@ export const players: Player[] = [
     position: "C",
     spacing: 1,
     defense: 5,
+    total: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
@@ -84,6 +93,7 @@ export const players: Player[] = [
     position: "C",
     spacing: 4,
     defense: 2,
+    total: 4,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
 ];
@@ -97,23 +107,43 @@ export const calculateTeamRating = (lineup: Lineup): number => {
     return 0;
   }
 
-  const spacingAvg =
-    (lineup.PG.spacing +
-      lineup.SG.spacing +
-      lineup.SF.spacing +
-      lineup.PF.spacing +
-      lineup.C.spacing) /
-    5;
+  const spacingTotal =
+    lineup.PG.spacing +
+    lineup.SG.spacing +
+    lineup.SF.spacing +
+    lineup.PF.spacing +
+    lineup.C.spacing;
 
-  const defenseAvg =
-    (lineup.PG.defense +
-      lineup.SG.defense +
-      lineup.SF.defense +
-      lineup.PF.defense +
-      lineup.C.defense) /
-    5;
+  const defenseTotal =
+    lineup.PG.defense +
+    lineup.SG.defense +
+    lineup.SF.defense +
+    lineup.PF.defense +
+    lineup.C.defense;
 
-  // Convert the 1-5 rating to expected wins
-  const rating = (spacingAvg + defenseAvg) / 2;
-  return Math.round((rating / 5) * 82); // Convert to expected wins in 82 game season
+  const totalRating =
+    lineup.PG.total +
+    lineup.SG.total +
+    lineup.SF.total +
+    lineup.PF.total +
+    lineup.C.total;
+
+  // Perfect team (82-0) needs:
+  // - Total rating of 23 or greater
+  // - Spacing of 17 or greater
+  // - Defense of 17 or greater
+  const perfectScore = totalRating >= 23 && spacingTotal >= 17 && defenseTotal >= 17;
+
+  if (perfectScore) {
+    return 82;
+  }
+
+  // Calculate wins based on how close the team is to perfect
+  const spacingScore = spacingTotal / 17;
+  const defenseScore = defenseTotal / 17;
+  const totalScore = totalRating / 23;
+
+  // Average the three scores and multiply by 82 for expected wins
+  const winPercentage = (spacingScore + defenseScore + totalScore) / 3;
+  return Math.round(winPercentage * 82);
 };

@@ -6,6 +6,7 @@ export interface Player {
   position: Position;
   spacing: number;
   defense: number;
+  total: number;
   imageUrl: string;
 }
 
