@@ -71,7 +71,7 @@ const Index = () => {
     const player = availablePlayers[index];
     if (!player) {
       return (
-        <Card className="p-2 h-[160px] w-[120px] bg-gray-100">
+        <Card className="p-2 h-[140px] w-[100px] sm:h-[160px] sm:w-[120px] bg-gray-100">
           <div className="flex items-center justify-center h-full">
             <span className="text-gray-400">{position}</span>
           </div>
@@ -88,26 +88,26 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-2 sm:px-4">
+    <div className="min-h-screen bg-gray-50 py-6 sm:py-12 px-2 sm:px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-nba-blue mb-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-nba-blue mb-2">
             Build Your Dream Team
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-gray-600">
             Select players to build your ultimate lineup
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-8">
+          <div className="space-y-6 sm:space-y-8">
             {!isComplete && (
-              <div className="flex flex-row gap-1 justify-center">
-                <div className="w-[120px]">{renderPositionCard("PG", 0)}</div>
-                <div className="w-[120px]">{renderPositionCard("SG", 1)}</div>
-                <div className="w-[120px]">{renderPositionCard("SF", 2)}</div>
-                <div className="w-[120px]">{renderPositionCard("PF", 3)}</div>
-                <div className="w-[120px]">{renderPositionCard("C", 4)}</div>
+              <div className="flex flex-row gap-2 justify-center flex-wrap max-w-[340px] sm:max-w-none mx-auto">
+                {["PG", "SG", "SF", "PF", "C"].map((pos, index) => (
+                  <div key={pos} className="w-[100px] sm:w-[120px]">
+                    {renderPositionCard(pos as Position, index)}
+                  </div>
+                ))}
               </div>
             )}
             {isComplete && (

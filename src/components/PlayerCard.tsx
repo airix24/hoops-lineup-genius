@@ -9,11 +9,11 @@ interface PlayerCardProps {
 export const PlayerCard = ({ player, onSelect }: PlayerCardProps) => {
   return (
     <Card
-      className="p-2 h-[160px] w-[120px] cursor-pointer transition-all hover:animate-card-hover border-2 hover:border-nba-blue"
+      className="p-2 h-[140px] w-[100px] sm:h-[160px] sm:w-[120px] cursor-pointer transition-all hover:animate-card-hover border-2 hover:border-nba-blue"
       onClick={() => onSelect(player)}
     >
       <div className="flex flex-col items-center space-y-1">
-        <div className="relative w-16 h-24 overflow-hidden">
+        <div className="relative w-14 h-20 sm:w-16 sm:h-24 overflow-hidden">
           <img
             src={player.imageUrl}
             alt={player.name}
