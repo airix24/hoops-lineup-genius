@@ -1,13 +1,20 @@
 import { Player, Position, Lineup } from "@/types/basketball";
 
+const TIER_CHANCES = {
+  goat: 0.05, // 5% chance - extremely rare
+  legend: 0.15, // 15% chance - very rare
+  star: 0.4, // 40% chance - uncommon
+  regular: 1, // 100% chance - always included
+} as const;
+
 export const players: Player[] = [
   // Point Guards
   {
     id: "curry",
     name: "Stephen Curry",
     position: "PG",
-    tier: "",
-    spacing: 5,
+    tier: "legend",
+    spacing: 10,
     defense: 1,
     main: 5,
     imageUrl:
@@ -17,10 +24,10 @@ export const players: Player[] = [
     id: "magic",
     name: "Magic Johnson",
     position: "PG",
-    tier: "legend",
+    tier: "goat",
     spacing: 2,
     defense: 3,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/johnsma02.jpg",
   },
@@ -28,10 +35,10 @@ export const players: Player[] = [
     id: "oscar",
     name: "Oscar Robertson",
     position: "PG",
-    tier: "",
+    tier: "legend",
     spacing: 2,
     defense: 3,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/roberos01.jpg",
   },
@@ -39,10 +46,10 @@ export const players: Player[] = [
     id: "west",
     name: "Jerry West",
     position: "PG",
-    tier: "",
+    tier: "legend",
     spacing: 2,
     defense: 3,
-    main: 4,
+    main: 9,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/westje01.jpg",
   },
@@ -50,10 +57,10 @@ export const players: Player[] = [
     id: "shai",
     name: "Shai Gilgeous-Alexander",
     position: "PG",
-    tier: "",
+    tier: "star",
     spacing: 2,
     defense: 3,
-    main: 4,
+    main: 8,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/gilgesh01.jpg",
   },
@@ -61,10 +68,10 @@ export const players: Player[] = [
     id: "doncic",
     name: "Luka Doncic",
     position: "PG",
-    tier: "",
+    tier: "star",
     spacing: 2,
     defense: 3,
-    main: 4,
+    main: 8,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/doncilu01.jpg",
   },
@@ -72,10 +79,10 @@ export const players: Player[] = [
     id: "brunson",
     name: "Jalen Brunson",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 7,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/brunsja01.jpg",
   },
@@ -83,10 +90,10 @@ export const players: Player[] = [
     id: "morant",
     name: "Ja Morant",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 7,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/moranja01.jpg",
   },
@@ -94,10 +101,10 @@ export const players: Player[] = [
     id: "fox",
     name: "De'Aaron Fox",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 6,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/foxde01.jpg",
   },
@@ -105,10 +112,10 @@ export const players: Player[] = [
     id: "kyrie",
     name: "Kyrie Irving",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 6,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/irvinky01.jpg",
   },
@@ -116,10 +123,10 @@ export const players: Player[] = [
     id: "lamelo",
     name: "LaMelo Ball",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/ballla01.jpg",
   },
@@ -127,10 +134,10 @@ export const players: Player[] = [
     id: "haliburton",
     name: "Tyrese Haliburton",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/halibty01.jpg",
   },
@@ -138,10 +145,10 @@ export const players: Player[] = [
     id: "dame",
     name: "Damian Lillard",
     position: "PG",
-    tier: "",
+    tier: "star",
     spacing: 2,
     defense: 3,
-    main: 4,
+    main: 7,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/lillada01.jpg",
   },
@@ -149,10 +156,10 @@ export const players: Player[] = [
     id: "cade",
     name: "Cade Cunningham",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/cunnica01.jpg",
   },
@@ -160,10 +167,10 @@ export const players: Player[] = [
     id: "trae",
     name: "Trae Young",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/youngtr01.jpg",
   },
@@ -171,10 +178,10 @@ export const players: Player[] = [
     id: "maxey",
     name: "Tyrese Maxey",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/maxeyty01.jpg",
   },
@@ -182,10 +189,10 @@ export const players: Player[] = [
     id: "garland",
     name: "Darius Garland",
     position: "PG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/garlada01.jpg",
   },
@@ -194,10 +201,10 @@ export const players: Player[] = [
     id: "jordan",
     name: "Michael Jordan",
     position: "SG",
-    tier: "legend",
+    tier: "goat",
     spacing: 3,
     defense: 5,
-    main: 6,
+    main: 12,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/jordami01.jpg",
   },
@@ -208,7 +215,7 @@ export const players: Player[] = [
     tier: "legend",
     spacing: 4,
     defense: 4,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/bryanko01.jpg",
   },
@@ -216,10 +223,10 @@ export const players: Player[] = [
     id: "ant",
     name: "Anthony Edwards",
     position: "SG",
-    tier: "",
+    tier: "star",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 7,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/edwaran01.jpg",
   },
@@ -227,10 +234,10 @@ export const players: Player[] = [
     id: "donovan",
     name: "Donovan Mitchell",
     position: "SG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 6,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/mitchdo01.jpg",
   },
@@ -238,10 +245,10 @@ export const players: Player[] = [
     id: "booker",
     name: "Devin Booker",
     position: "SG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 6,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/bookede01.jpg",
   },
@@ -249,10 +256,10 @@ export const players: Player[] = [
     id: "jalen_williams",
     name: "Jalen Williams",
     position: "SG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 6,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/willija06.jpg",
   },
@@ -260,10 +267,10 @@ export const players: Player[] = [
     id: "harden",
     name: "James Harden",
     position: "SG",
-    tier: "",
+    tier: "regular",
     spacing: 2,
     defense: 3,
-    main: 3,
+    main: 7,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/hardeja01.jpg",
   },
@@ -272,10 +279,10 @@ export const players: Player[] = [
     id: "lebron",
     name: "LeBron James",
     position: "SF",
-    tier: "legend",
+    tier: "goat",
     spacing: 3,
     defense: 4,
-    main: 5,
+    main: 12,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/jamesle01.jpg",
   },
@@ -286,7 +293,7 @@ export const players: Player[] = [
     tier: "legend",
     spacing: 5,
     defense: 2,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/birdla01.jpg",
   },
@@ -294,10 +301,10 @@ export const players: Player[] = [
     id: "durant",
     name: "Kevin Durant",
     position: "SF",
-    tier: "",
+    tier: "legend",
     spacing: 3,
     defense: 4,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/duranke01.jpg",
   },
@@ -305,10 +312,10 @@ export const players: Player[] = [
     id: "julius",
     name: "Julius Erving",
     position: "SF",
-    tier: "",
+    tier: "legend",
     spacing: 5,
     defense: 2,
-    main: 4,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/ervinju01.jpg",
   },
@@ -316,10 +323,10 @@ export const players: Player[] = [
     id: "giannis",
     name: "Giannis Antetokounmpo",
     position: "PF",
-    tier: "",
+    tier: "star",
     spacing: 3,
     defense: 4,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/antetgi01.jpg",
   },
@@ -327,10 +334,10 @@ export const players: Player[] = [
     id: "jayson",
     name: "Jayson Tatum",
     position: "SF",
-    tier: "",
+    tier: "star",
     spacing: 3,
     defense: 4,
-    main: 4,
+    main: 8,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/tatumja01.jpg",
   },
@@ -338,10 +345,10 @@ export const players: Player[] = [
     id: "jaylen",
     name: "Jaylen Brown",
     position: "SF",
-    tier: "",
+    tier: "regular",
     spacing: 3,
     defense: 4,
-    main: 3,
+    main: 6,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/brownja02.jpg",
   },
@@ -349,10 +356,10 @@ export const players: Player[] = [
     id: "franz",
     name: "Franz Wagner",
     position: "SF",
-    tier: "",
+    tier: "regular",
     spacing: 3,
     defense: 4,
-    main: 2,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/wagnefr01.jpg",
   },
@@ -360,10 +367,10 @@ export const players: Player[] = [
     id: "kawhi",
     name: "Kawhi Leonard",
     position: "SF",
-    tier: "",
+    tier: "regular",
     spacing: 3,
     defense: 5,
-    main: 4,
+    main: 7,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/leonaka01.jpg",
   },
@@ -375,7 +382,7 @@ export const players: Player[] = [
     tier: "legend",
     spacing: 2,
     defense: 5,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/duncati01.jpg",
   },
@@ -383,10 +390,10 @@ export const players: Player[] = [
     id: "dirk",
     name: "Dirk Nowitzki",
     position: "PF",
-    tier: "",
+    tier: "legend",
     spacing: 5,
     defense: 2,
-    main: 5,
+    main: 9,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/nowitdi01.jpg",
   },
@@ -394,10 +401,10 @@ export const players: Player[] = [
     id: "malone",
     name: "Karl Malone",
     position: "PF",
-    tier: "",
+    tier: "legend",
     spacing: 2,
     defense: 5,
-    main: 5,
+    main: 8,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/malonka01.jpg",
   },
@@ -405,10 +412,10 @@ export const players: Player[] = [
     id: "garnett",
     name: "Kevin Garnett",
     position: "PF",
-    tier: "",
+    tier: "legend",
     spacing: 3,
     defense: 4,
-    main: 5,
+    main: 8,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/garneke01.jpg",
   },
@@ -416,10 +423,10 @@ export const players: Player[] = [
     id: "davis",
     name: "Anthony Davis",
     position: "PF",
-    tier: "",
+    tier: "star",
     spacing: 3,
     defense: 4,
-    main: 4,
+    main: 8,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/davisan02.jpg",
   },
@@ -427,10 +434,10 @@ export const players: Player[] = [
     id: "paolo",
     name: "Paolo Banchero",
     position: "PF",
-    tier: "",
+    tier: "regular",
     spacing: 3,
     defense: 4,
-    main: 3,
+    main: 6,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/banchpa01.jpg",
   },
@@ -438,10 +445,10 @@ export const players: Player[] = [
     id: "mobley",
     name: "Evan Mobley",
     position: "PF",
-    tier: "",
+    tier: "regular",
     spacing: 3,
     defense: 4,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/mobleev01.jpg",
   },
@@ -450,10 +457,10 @@ export const players: Player[] = [
     id: "kareem",
     name: "Kareem Abdul-Jabbar",
     position: "C",
-    tier: " legend",
+    tier: "goat",
     spacing: 1,
     defense: 5,
-    main: 5,
+    main: 12,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/abdulka01.jpg",
   },
@@ -464,7 +471,7 @@ export const players: Player[] = [
     tier: "legend",
     spacing: 1,
     defense: 5,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/russebi01.jpg",
   },
@@ -475,7 +482,7 @@ export const players: Player[] = [
     tier: "legend",
     spacing: 1,
     defense: 5,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/chambwi01.jpg",
   },
@@ -486,7 +493,7 @@ export const players: Player[] = [
     tier: "legend",
     spacing: 1,
     defense: 5,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/onealsh01.jpg",
   },
@@ -494,10 +501,10 @@ export const players: Player[] = [
     id: "hakeem",
     name: "Hakeem Olajuwon",
     position: "C",
-    tier: "",
+    tier: "legend",
     spacing: 1,
     defense: 5,
-    main: 5,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/olajuha01.jpg",
   },
@@ -505,10 +512,10 @@ export const players: Player[] = [
     id: "jokic",
     name: "Nikola Jokic",
     position: "C",
-    tier: "",
+    tier: "star",
     spacing: 4,
     defense: 2,
-    main: 4,
+    main: 10,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/jokicni01.jpg",
   },
@@ -516,10 +523,10 @@ export const players: Player[] = [
     id: "moses",
     name: "Moses Malone",
     position: "C",
-    tier: "",
+    tier: "legend",
     spacing: 1,
     defense: 5,
-    main: 4,
+    main: 9,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/malonmo01.jpg",
   },
@@ -527,10 +534,10 @@ export const players: Player[] = [
     id: "wemby",
     name: "Victor Wembanyama",
     position: "C",
-    tier: "",
+    tier: "star",
     spacing: 1,
     defense: 5,
-    main: 3,
+    main: 8,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/wembavi01.jpg",
   },
@@ -538,10 +545,10 @@ export const players: Player[] = [
     id: "kat",
     name: "Karl-Anthony Towns",
     position: "C",
-    tier: "",
+    tier: "regular",
     spacing: 1,
     defense: 5,
-    main: 3,
+    main: 7,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/townska01.jpg",
   },
@@ -549,10 +556,10 @@ export const players: Player[] = [
     id: "sabonis",
     name: "Domantas Sabonis",
     position: "C",
-    tier: "",
+    tier: "regular",
     spacing: 1,
     defense: 5,
-    main: 3,
+    main: 6,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/sabondo01.jpg",
   },
@@ -560,10 +567,10 @@ export const players: Player[] = [
     id: "jjj",
     name: "Jaren Jackson Jr.",
     position: "PF",
-    tier: "",
+    tier: "regular",
     spacing: 1,
     defense: 5,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/jacksja02.jpg",
   },
@@ -571,10 +578,10 @@ export const players: Player[] = [
     id: "bam",
     name: "Bam Adebayo",
     position: "C",
-    tier: "",
+    tier: "regular",
     spacing: 1,
     defense: 5,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/adebaba01.jpg",
   },
@@ -582,17 +589,26 @@ export const players: Player[] = [
     id: "chet",
     name: "Chet Holmgren",
     position: "C",
-    tier: "",
+    tier: "regular",
     spacing: 1,
     defense: 5,
-    main: 3,
+    main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/holmgch01.jpg",
   },
 ];
 
 export const getRandomPlayersForPosition = (position: Position): Player[] => {
-  return players.filter((p) => p.position === position);
+  const positionPlayers = players.filter((p) => p.position === position);
+
+  // Roll for each tier
+  const tierRoll = Math.random();
+
+  return positionPlayers.filter((player) => {
+    const tierChance =
+      TIER_CHANCES[player.tier as keyof typeof TIER_CHANCES] ?? 1;
+    return tierRoll < tierChance;
+  });
 };
 
 export const calculateTeamRating = (lineup: Lineup): number => {
@@ -608,8 +624,8 @@ export const calculateTeamRating = (lineup: Lineup): number => {
     lineup.PF.main +
     lineup.C.main;
 
-  // Maximum possible score would be 25 (5 players × max rating of 5)
-  const maxScore = 25;
+  // Maximum possible score would be 60 (5 players × max rating of 12)
+  const maxScore = 45; // Threshold for perfect season
 
   // Calculate win percentage based on total score
   const winPercentage = Math.min(totalScore / maxScore, 1);
