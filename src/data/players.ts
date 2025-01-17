@@ -107,43 +107,20 @@ export const calculateTeamRating = (lineup: Lineup): number => {
     return 0;
   }
 
-  const spacingTotal =
-    lineup.PG.spacing +
-    lineup.SG.spacing +
-    lineup.SF.spacing +
-    lineup.PF.spacing +
-    lineup.C.spacing;
+  // Sum all ratings (total, spacing, and defense)
+  const totalScore = 
+    (lineup.PG.total + lineup.PG.spacing + lineup.PG.defense) +
+    (lineup.SG.total + lineup.SG.spacing + lineup.SG.defense) +
+    (lineup.SF.total + lineup.SF.spacing + lineup.SF.defense) +
+    (lineup.PF.total + lineup.PF.spacing + lineup.PF.defense) +
+    (lineup.C.total + lineup.C.spacing + lineup.C.defense);
 
-  const defenseTotal =
-    lineup.PG.defense +
-    lineup.SG.defense +
-    lineup.SF.defense +
-    lineup.PF.defense +
-    lineup.C.defense;
-
-  const totalRating =
-    lineup.PG.total +
-    lineup.SG.total +
-    lineup.SF.total +
-    lineup.PF.total +
-    lineup.C.total;
-
-  // Perfect team (82-0) needs:
-  // - Total rating of 23 or greater
-  // - Spacing of 17 or greater
-  // - Defense of 17 or greater
-  const perfectScore = totalRating >= 23 && spacingTotal >= 17 && defenseTotal >= 17;
-
-  if (perfectScore) {
-    return 82;
-  }
-
-  // Calculate wins based on how close the team is to perfect
-  const spacingScore = spacingTotal / 17;
-  const defenseScore = defenseTotal / 17;
-  const totalScore = totalRating / 23;
-
-  // Average the three scores and multiply by 82 for expected wins
-  const winPercentage = (spacingScore + defenseScore + totalScore) / 3;
+  // Maximum possible score would be 75 (5 players × 3 categories × max rating of 5)
+  const maxScore = 75;
+  
+  // Calculate win percentage based on total score
+  const winPercentage = totalScore / maxScore;
+  
+  // Convert to wins in an 82-game season
   return Math.round(winPercentage * 82);
 };

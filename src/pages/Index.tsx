@@ -19,10 +19,17 @@ const Index = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   const handlePlayerSelect = (player: Player) => {
+    // Check if this position is already filled
+    if (lineup[player.position]) {
+      return;
+    }
+
     const newLineup = { ...lineup, [player.position]: player };
     setLineup(newLineup);
 
-    if (Object.keys(newLineup).length === 5) {
+    const selectedPositionsCount = Object.keys(newLineup).length;
+    
+    if (selectedPositionsCount === 5) {
       const rating = calculateTeamRating(newLineup as Required<Lineup>);
       setWins(rating);
       setIsComplete(true);
