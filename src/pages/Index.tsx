@@ -3,12 +3,11 @@ import { Player, Position, Lineup } from "@/types/basketball";
 import { PlayerCard } from "@/components/PlayerCard";
 import { LineupDisplay } from "@/components/LineupDisplay";
 import { getRandomPlayersForPosition, calculateTeamRating } from "@/data/players";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 const POSITIONS: Position[] = ["PG", "SG", "SF", "PF", "C"];
 
 const Index = () => {
-  const { toast } = useToast();
   const [availablePlayers, setAvailablePlayers] = useState<Player[]>(() =>
     POSITIONS.map((pos) => {
       const positionPlayers = getRandomPlayersForPosition(pos);
@@ -17,6 +16,7 @@ const Index = () => {
   );
   const [lineup, setLineup] = useState<Lineup>({});
   const [wins, setWins] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
 
   const handlePlayerSelect = (player: Player) => {
     const newLineup = { ...lineup, [player.position]: player };
@@ -25,10 +25,7 @@ const Index = () => {
     if (Object.keys(newLineup).length === 5) {
       const rating = calculateTeamRating(newLineup as Required<Lineup>);
       setWins(rating);
-      toast({
-        title: "Lineup Complete!",
-        description: `Your team is projected to win ${rating} games!`,
-      });
+      setIsComplete(true);
     } else {
       // Generate new set of available players, excluding positions already selected
       const newAvailablePlayers = POSITIONS.map((pos) => {
@@ -39,6 +36,18 @@ const Index = () => {
       
       setAvailablePlayers(newAvailablePlayers);
     }
+  };
+
+  const handlePlayAgain = () => {
+    setLineup({});
+    setWins(0);
+    setIsComplete(false);
+    setAvailablePlayers(
+      POSITIONS.map((pos) => {
+        const positionPlayers = getRandomPlayersForPosition(pos);
+        return positionPlayers[Math.floor(Math.random() * positionPlayers.length)];
+      })
+    );
   };
 
   return (
@@ -55,15 +64,27 @@ const Index = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {availablePlayers.map((player) => (
-                <PlayerCard
-                  key={player.id}
-                  player={player}
-                  onSelect={handlePlayerSelect}
-                />
-              ))}
-            </div>
+            {!isComplete && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {availablePlayers.map((player) => (
+                  <PlayerCard
+                    key={player.id}
+                    player={player}
+                    onSelect={handlePlayerSelect}
+                  />
+                ))}
+              </div>
+            )}
+            {isComplete && (
+              <div className="flex justify-center">
+                <Button
+                  onClick={handlePlayAgain}
+                  className="bg-nba-blue hover:bg-nba-blue/90"
+                >
+                  Play Again
+                </Button>
+              </div>
+            )}
           </div>
           <div className="flex justify-center">
             <LineupDisplay lineup={lineup} wins={wins} />
