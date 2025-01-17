@@ -93,9 +93,6 @@ const Index = () => {
           <h1 className="text-2xl sm:text-3xl font-bold text-nba-blue mb-2">
             Build Your Dream Team
           </h1>
-          <p className="text-base sm:text-lg text-gray-600">
-            Select players to build your ultimate lineup
-          </p>
         </div>
 
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-8">
