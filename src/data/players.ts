@@ -42,17 +42,17 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/roberos01.jpg",
   },
-  {
-    id: "west",
-    name: "Jerry West",
-    position: "PG",
-    tier: "legend",
-    spacing: 2,
-    defense: 3,
-    main: 9,
-    imageUrl:
-      "https://www.basketball-reference.com/req/202106291/images/headshots/westje01.jpg",
-  },
+  // {
+  //   id: "west",
+  //   name: "Jerry West",
+  //   position: "PG",
+  //   tier: "legend",
+  //   spacing: 2,
+  //   defense: 3,
+  //   main: 9,
+  //   imageUrl:
+  //     "https://www.basketball-reference.com/req/202106291/images/headshots/westje01.jpg",
+  // },
   {
     id: "shai",
     name: "Shai Gilgeous-Alexander",
@@ -196,6 +196,28 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/garlada01.jpg",
   },
+  {
+    id: "thomas",
+    name: "Isiah Thomas",
+    position: "PG",
+    tier: "legend",
+    spacing: 2,
+    defense: 3,
+    main: 10,
+    imageUrl:
+      "https://www.basketball-reference.com/req/202106291/images/headshots/thomais01.jpg",
+  },
+  {
+    id: "cp3",
+    name: "Chris Paul",
+    position: "PG",
+    tier: "legend",
+    spacing: 2,
+    defense: 3,
+    main: 10,
+    imageUrl:
+      "https://www.basketball-reference.com/req/202106291/images/headshots/paulch01.jpg",
+  },
   // Shooting Guards
   {
     id: "jordan",
@@ -204,7 +226,7 @@ export const players: Player[] = [
     tier: "goat",
     spacing: 3,
     defense: 5,
-    main: 12,
+    main: 11,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/jordami01.jpg",
   },
@@ -274,6 +296,17 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/hardeja01.jpg",
   },
+  {
+    id: "wade",
+    name: "Dwyane Wade",
+    position: "SG",
+    tier: "legend",
+    spacing: 2,
+    defense: 3,
+    main: 8,
+    imageUrl:
+      "https://www.basketball-reference.com/req/202106291/images/headshots/wadedw01.jpg",
+  },
   // Small Forwards
   {
     id: "lebron",
@@ -282,7 +315,7 @@ export const players: Player[] = [
     tier: "goat",
     spacing: 3,
     defense: 4,
-    main: 12,
+    main: 11,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/jamesle01.jpg",
   },
@@ -308,17 +341,17 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/duranke01.jpg",
   },
-  {
-    id: "julius",
-    name: "Julius Erving",
-    position: "SF",
-    tier: "legend",
-    spacing: 5,
-    defense: 2,
-    main: 10,
-    imageUrl:
-      "https://www.basketball-reference.com/req/202106291/images/headshots/ervinju01.jpg",
-  },
+  // {
+  //   id: "julius",
+  //   name: "Julius Erving",
+  //   position: "SF",
+  //   tier: "legend",
+  //   spacing: 5,
+  //   defense: 2,
+  //   main: 10,
+  //   imageUrl:
+  //     "https://www.basketball-reference.com/req/202106291/images/headshots/ervinju01.jpg",
+  // },
   {
     id: "giannis",
     name: "Giannis Antetokounmpo",
@@ -373,6 +406,17 @@ export const players: Player[] = [
     main: 7,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/leonaka01.jpg",
+  },
+  {
+    id: "pippen",
+    name: "Scottie Pippen",
+    position: "SF",
+    tier: "legend",
+    spacing: 3,
+    defense: 4,
+    main: 8,
+    imageUrl:
+      "https://www.basketball-reference.com/req/202106291/images/headshots/pippesc01.jpg",
   },
   // Power Forwards
   {
@@ -452,6 +496,17 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/mobleev01.jpg",
   },
+  {
+    id: "barkley",
+    name: "Charles Barkley",
+    position: "PF",
+    tier: "legend",
+    spacing: 3,
+    defense: 4,
+    main: 8,
+    imageUrl:
+      "https://www.basketball-reference.com/req/202106291/images/headshots/barklch01.jpg",
+  },
   // Centers
   {
     id: "kareem",
@@ -460,7 +515,7 @@ export const players: Player[] = [
     tier: "goat",
     spacing: 1,
     defense: 5,
-    main: 12,
+    main: 11,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/abdulka01.jpg",
   },
@@ -519,17 +574,17 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/jokicni01.jpg",
   },
-  {
-    id: "moses",
-    name: "Moses Malone",
-    position: "C",
-    tier: "legend",
-    spacing: 1,
-    defense: 5,
-    main: 9,
-    imageUrl:
-      "https://www.basketball-reference.com/req/202106291/images/headshots/malonmo01.jpg",
-  },
+  // {
+  //   id: "moses",
+  //   name: "Moses Malone",
+  //   position: "C",
+  //   tier: "legend",
+  //   spacing: 1,
+  //   defense: 5,
+  //   main: 9,
+  //   imageUrl:
+  //     "https://www.basketball-reference.com/req/202106291/images/headshots/malonmo01.jpg",
+  // },
   {
     id: "wemby",
     name: "Victor Wembanyama",
@@ -595,6 +650,17 @@ export const players: Player[] = [
     main: 5,
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/holmgch01.jpg",
+  },
+  {
+    id: "admiral",
+    name: "David Robinson",
+    position: "C",
+    tier: "legend",
+    spacing: 1,
+    defense: 5,
+    main: 10,
+    imageUrl:
+      "https://www.basketball-reference.com/req/202106291/images/headshots/robinda01.jpg",
   },
 ];
 
