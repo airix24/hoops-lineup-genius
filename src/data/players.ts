@@ -1,4 +1,4 @@
-import { Player, Position } from "@/types/basketball";
+import { Player, Position, Lineup } from "@/types/basketball";
 
 export const players: Player[] = [
   // Point Guards
@@ -6,16 +6,16 @@ export const players: Player[] = [
     id: "curry",
     name: "Stephen Curry",
     position: "PG",
-    spacing: 10,
-    defense: 7,
+    spacing: 5,
+    defense: 1,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
     id: "magic",
     name: "Magic Johnson",
     position: "PG",
-    spacing: 7,
-    defense: 8,
+    spacing: 2,
+    defense: 3,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   // Shooting Guards
@@ -23,16 +23,16 @@ export const players: Player[] = [
     id: "jordan",
     name: "Michael Jordan",
     position: "SG",
-    spacing: 8,
-    defense: 9,
+    spacing: 3,
+    defense: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
     id: "kobe",
     name: "Kobe Bryant",
     position: "SG",
-    spacing: 8,
-    defense: 9,
+    spacing: 4,
+    defense: 4,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   // Small Forwards
@@ -40,16 +40,16 @@ export const players: Player[] = [
     id: "lebron",
     name: "LeBron James",
     position: "SF",
-    spacing: 8,
-    defense: 9,
+    spacing: 3,
+    defense: 4,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
     id: "bird",
     name: "Larry Bird",
     position: "SF",
-    spacing: 9,
-    defense: 7,
+    spacing: 5,
+    defense: 2,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   // Power Forwards
@@ -57,16 +57,16 @@ export const players: Player[] = [
     id: "duncan",
     name: "Tim Duncan",
     position: "PF",
-    spacing: 7,
-    defense: 10,
+    spacing: 2,
+    defense: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
     id: "dirk",
     name: "Dirk Nowitzki",
     position: "PF",
-    spacing: 9,
-    defense: 7,
+    spacing: 5,
+    defense: 2,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   // Centers
@@ -74,24 +74,22 @@ export const players: Player[] = [
     id: "hakeem",
     name: "Hakeem Olajuwon",
     position: "C",
-    spacing: 6,
-    defense: 10,
+    spacing: 1,
+    defense: 5,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
     id: "jokic",
     name: "Nikola Jokic",
     position: "C",
-    spacing: 9,
-    defense: 7,
+    spacing: 4,
+    defense: 2,
     imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
 ];
 
 export const getRandomPlayersForPosition = (position: Position): Player[] => {
-  const positionPlayers = players.filter((p) => p.position === position);
-  const shuffled = [...positionPlayers].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, 5);
+  return players.filter((p) => p.position === position);
 };
 
 export const calculateTeamRating = (lineup: Lineup): number => {
@@ -115,7 +113,7 @@ export const calculateTeamRating = (lineup: Lineup): number => {
       lineup.C.defense) /
     5;
 
-  // Basic algorithm - can be enhanced later
+  // Convert the 1-5 rating to expected wins
   const rating = (spacingAvg + defenseAvg) / 2;
-  return Math.round((rating / 10) * 82); // Convert to expected wins in 82 game season
+  return Math.round((rating / 5) * 82); // Convert to expected wins in 82 game season
 };

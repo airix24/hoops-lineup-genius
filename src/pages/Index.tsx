@@ -9,9 +9,11 @@ const POSITIONS: Position[] = ["PG", "SG", "SF", "PF", "C"];
 
 const Index = () => {
   const { toast } = useToast();
-  const [currentPosition, setCurrentPosition] = useState<Position>("PG");
   const [availablePlayers, setAvailablePlayers] = useState<Player[]>(() =>
-    getRandomPlayersForPosition("PG")
+    POSITIONS.map((pos) => {
+      const positionPlayers = getRandomPlayersForPosition(pos);
+      return positionPlayers[Math.floor(Math.random() * positionPlayers.length)];
+    })
   );
   const [lineup, setLineup] = useState<Lineup>({});
   const [wins, setWins] = useState(0);
@@ -20,19 +22,22 @@ const Index = () => {
     const newLineup = { ...lineup, [player.position]: player };
     setLineup(newLineup);
 
-    const nextPositionIndex = POSITIONS.indexOf(currentPosition) + 1;
-    
-    if (nextPositionIndex < POSITIONS.length) {
-      const nextPosition = POSITIONS[nextPositionIndex];
-      setCurrentPosition(nextPosition);
-      setAvailablePlayers(getRandomPlayersForPosition(nextPosition));
-    } else {
+    if (Object.keys(newLineup).length === 5) {
       const rating = calculateTeamRating(newLineup as Required<Lineup>);
       setWins(rating);
       toast({
         title: "Lineup Complete!",
         description: `Your team is projected to win ${rating} games!`,
       });
+    } else {
+      // Generate new set of available players, excluding positions already selected
+      const newAvailablePlayers = POSITIONS.map((pos) => {
+        if (newLineup[pos]) return null;
+        const positionPlayers = getRandomPlayersForPosition(pos);
+        return positionPlayers[Math.floor(Math.random() * positionPlayers.length)];
+      }).filter((p): p is Player => p !== null);
+      
+      setAvailablePlayers(newAvailablePlayers);
     }
   };
 
@@ -44,7 +49,7 @@ const Index = () => {
             Build Your Dream Team
           </h1>
           <p className="text-xl text-gray-600">
-            Select your {currentPosition} to continue building your lineup
+            Select players to build your ultimate lineup
           </p>
         </div>
 
