@@ -24,21 +24,17 @@ const Index = () => {
   const [lineup, setLineup] = useState<Lineup>({});
   const [wins, setWins] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [rerollCount, setRerollCount] = useState(0);
 
   const handlePlayerSelect = (player: Player) => {
-    if (lineup[player.position]) {
-      return;
-    }
+    if (lineup[player.position]) return;
 
     const newLineup = { ...lineup, [player.position]: player };
     setLineup(newLineup);
 
-    const selectedPositionsCount = Object.keys(newLineup).length;
-
-    if (selectedPositionsCount === 5) {
-      const rating = calculateTeamRating(newLineup as Required<Lineup>);
-      setWins(rating);
+    if (Object.keys(newLineup).length === POSITIONS.length) {
       setIsComplete(true);
+      setWins(calculateTeamRating(newLineup as Required<Lineup>));
     } else {
       // Update available players, replacing selected position with null
       const newAvailablePlayers = POSITIONS.map((pos) => {
@@ -49,6 +45,7 @@ const Index = () => {
         ];
       });
 
+      setRerollCount((count) => count + 1);
       setAvailablePlayers(newAvailablePlayers);
     }
   };
@@ -57,6 +54,7 @@ const Index = () => {
     setLineup({});
     setWins(0);
     setIsComplete(false);
+    setRerollCount((count) => count + 1);
     setAvailablePlayers(
       POSITIONS.map((pos) => {
         const positionPlayers = getRandomPlayersForPosition(pos);
@@ -83,6 +81,7 @@ const Index = () => {
         key={player.id}
         player={player}
         onSelect={handlePlayerSelect}
+        rerollKey={rerollCount}
       />
     );
   };
