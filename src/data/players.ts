@@ -624,11 +624,16 @@ export const calculateTeamRating = (lineup: Lineup): number => {
     lineup.PF.main +
     lineup.C.main;
 
-  // Maximum possible score would be 60 (5 players × max rating of 12)
+  // A team with all 5-rated players (25 total) should win ~55 games
+  // A team with 45+ total should win all 82 games
+  const minScore = 25; // Score for a team of all 5-rated players
   const maxScore = 45; // Threshold for perfect season
 
-  // Calculate win percentage based on total score
-  const winPercentage = Math.min(totalScore / maxScore, 1);
+  // Calculate win percentage based on total score, with 25 points = ~55 wins
+  const winPercentage = Math.min(
+    0.67 + ((totalScore - minScore) / (maxScore - minScore)) * 0.33,
+    1
+  );
 
   // Convert to wins in an 82-game season
   return Math.round(winPercentage * 82);
