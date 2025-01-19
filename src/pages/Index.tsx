@@ -13,6 +13,33 @@ import { Card } from "@/components/ui/card";
 
 const POSITIONS: Position[] = ["PG", "SG", "SF", "PF", "C"];
 
+const getRandomPositionlessPlayers = (usedPlayerIds: Set<string>) => {
+  const availablePlayers = players.filter(
+    (player) => !usedPlayerIds.has(player.id)
+  );
+
+  // Apply rarity filtering similar to classic mode
+  const tierRoll = Math.random();
+  const filteredPlayers = availablePlayers.filter((player) => {
+    switch (player.tier) {
+      case "goat":
+        return tierRoll < 0.05; // 5% chance
+      case "legend":
+        return tierRoll < 0.15; // 15% chance
+      case "star":
+        return tierRoll < 0.4; // 40% chance
+      default:
+        return true; // regular players always included
+    }
+  });
+
+  // If no players pass the rarity filter, return from all available players
+  const playersToChooseFrom = filteredPlayers.length > 0 ? filteredPlayers : availablePlayers;
+  
+  const shuffled = [...playersToChooseFrom].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 5);
+};
+
 const Index = () => {
   const [gameMode, setGameMode] = useState<GameMode>("classic");
   const [availablePlayers, setAvailablePlayers] = useState<(Player | null)[]>(
@@ -30,14 +57,6 @@ const Index = () => {
   const [wins, setWins] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [rerollCount, setRerollCount] = useState(0);
-
-  const getRandomPositionlessPlayers = () => {
-    const availablePlayers = players.filter(
-      (player) => !usedPlayerIds.has(player.id)
-    );
-    const shuffled = [...availablePlayers].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 5);
-  };
 
   const handlePlayerSelect = (player: Player) => {
     if (gameMode === "classic") {
@@ -85,7 +104,7 @@ const Index = () => {
       });
 
       setUsedPlayerIds((prev) => new Set([...prev, player.id]));
-      setAvailablePlayers(getRandomPositionlessPlayers());
+      setAvailablePlayers(getRandomPositionlessPlayers(new Set([...usedPlayerIds, player.id])));
       setRerollCount((count) => count + 1);
     }
   };
@@ -107,7 +126,7 @@ const Index = () => {
         })
       );
     } else {
-      setAvailablePlayers(getRandomPositionlessPlayers());
+      setAvailablePlayers(getRandomPositionlessPlayers(new Set()));
     }
   };
 
