@@ -40,16 +40,17 @@ const getRandomPositionlessPlayers = (usedPlayerIds: Set<string>) => {
   return shuffled.slice(0, 5);
 };
 
+const getInitialClassicPlayers = () => {
+  return POSITIONS.map((pos) => {
+    const positionPlayers = getRandomPlayersForPosition(pos);
+    return positionPlayers[Math.floor(Math.random() * positionPlayers.length)];
+  });
+};
+
 const Index = () => {
   const [gameMode, setGameMode] = useState<GameMode>("classic");
   const [availablePlayers, setAvailablePlayers] = useState<(Player | null)[]>(
-    () =>
-      POSITIONS.map((pos) => {
-        const positionPlayers = getRandomPlayersForPosition(pos);
-        return positionPlayers[
-          Math.floor(Math.random() * positionPlayers.length)
-        ];
-      })
+    getInitialClassicPlayers()
   );
   const [lineup, setLineup] = useState<Lineup>({});
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
@@ -84,7 +85,6 @@ const Index = () => {
         setAvailablePlayers(newAvailablePlayers);
       }
     } else {
-      // Positionless mode
       if (selectedPlayers.length >= 5) return;
 
       setSelectedPlayers((prev) => {
@@ -117,14 +117,7 @@ const Index = () => {
     setIsComplete(false);
     setRerollCount((count) => count + 1);
     if (gameMode === "classic") {
-      setAvailablePlayers(
-        POSITIONS.map((pos) => {
-          const positionPlayers = getRandomPlayersForPosition(pos);
-          return positionPlayers[
-            Math.floor(Math.random() * positionPlayers.length)
-          ];
-        })
-      );
+      setAvailablePlayers(getInitialClassicPlayers());
     } else {
       setAvailablePlayers(getRandomPositionlessPlayers(new Set()));
     }
@@ -132,7 +125,17 @@ const Index = () => {
 
   const handleModeSelect = (mode: GameMode) => {
     setGameMode(mode);
-    handlePlayAgain();
+    setLineup({});
+    setSelectedPlayers([]);
+    setUsedPlayerIds(new Set());
+    setWins(0);
+    setIsComplete(false);
+    setRerollCount((count) => count + 1);
+    if (mode === "classic") {
+      setAvailablePlayers(getInitialClassicPlayers());
+    } else {
+      setAvailablePlayers(getRandomPositionlessPlayers(new Set()));
+    }
   };
 
   const renderPositionCard = (position: Position, index: number) => {
