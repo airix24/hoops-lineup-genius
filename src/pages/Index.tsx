@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Player, Position, Lineup } from "@/types/basketball";
+import { Player, Position, Lineup, GameMode } from "@/types/basketball";
 import { PlayerCard } from "@/components/PlayerCard";
 import { LineupDisplay } from "@/components/LineupDisplay";
+import { GameModeSelector } from "@/components/GameModeSelector";
 import {
   getRandomPlayersForPosition,
   calculateTeamRating,
@@ -12,6 +13,7 @@ import { Card } from "@/components/ui/card";
 const POSITIONS: Position[] = ["PG", "SG", "SF", "PF", "C"];
 
 const Index = () => {
+  const [gameMode, setGameMode] = useState<GameMode>("classic");
   const [availablePlayers, setAvailablePlayers] = useState<(Player | null)[]>(
     () =>
       POSITIONS.map((pos) => {
@@ -32,11 +34,13 @@ const Index = () => {
     const newLineup = { ...lineup, [player.position]: player };
     setLineup(newLineup);
 
-    if (Object.keys(newLineup).length === POSITIONS.length) {
+    const selectedPositionsCount = Object.keys(newLineup).length;
+    
+    if (selectedPositionsCount === 5) {
+      const rating = calculateTeamRating(newLineup as Required<Lineup>);
+      setWins(rating);
       setIsComplete(true);
-      setWins(calculateTeamRating(newLineup as Required<Lineup>));
     } else {
-      // Update available players, replacing selected position with null
       const newAvailablePlayers = POSITIONS.map((pos) => {
         if (newLineup[pos]) return null;
         const positionPlayers = getRandomPlayersForPosition(pos);
@@ -86,40 +90,61 @@ const Index = () => {
     );
   };
 
+  const renderBudgetGrid = () => {
+    return (
+      <div className="grid grid-cols-5 gap-4">
+        {Array.from({ length: 25 }).map((_, index) => (
+          <Card
+            key={index}
+            className="p-2 h-[100px] w-[100px] flex items-center justify-center"
+          >
+            {Math.random() > 0.5 ? "🍌" : "🍓"}
+          </Card>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-6 sm:py-12 px-2 sm:px-4">
+      <GameModeSelector currentMode={gameMode} onModeSelect={setGameMode} />
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-nba-blue mb-2">
-            Build Your Dream Team
+            {gameMode === "classic" ? "Build Your Dream Team" : "Budget Mode"}
           </h1>
         </div>
 
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-8">
           <div className="space-y-6 sm:space-y-8">
-            {!isComplete && (
-              <div className="flex flex-row gap-2 justify-center flex-wrap max-w-[340px] sm:max-w-none mx-auto">
-                {["PG", "SG", "SF", "PF", "C"].map((pos, index) => (
-                  <div key={pos} className="w-[100px] sm:w-[120px]">
-                    {renderPositionCard(pos as Position, index)}
-                  </div>
-                ))}
-              </div>
-            )}
-            {isComplete && (
-              <div className="flex justify-center">
-                <Button
-                  onClick={handlePlayAgain}
-                  className="bg-nba-blue hover:bg-nba-blue/90"
-                >
-                  Play Again
-                </Button>
-              </div>
+            {gameMode === "classic" ? (
+              !isComplete ? (
+                <div className="flex flex-row gap-2 justify-center flex-wrap max-w-[340px] sm:max-w-none mx-auto">
+                  {["PG", "SG", "SF", "PF", "C"].map((pos, index) => (
+                    <div key={pos} className="w-[100px] sm:w-[120px]">
+                      {renderPositionCard(pos as Position, index)}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex justify-center">
+                  <Button
+                    onClick={handlePlayAgain}
+                    className="bg-nba-blue hover:bg-nba-blue/90"
+                  >
+                    Play Again
+                  </Button>
+                </div>
+              )
+            ) : (
+              renderBudgetGrid()
             )}
           </div>
-          <div className="flex justify-center">
-            <LineupDisplay lineup={lineup} wins={wins} />
-          </div>
+          {gameMode === "classic" && (
+            <div className="flex justify-center">
+              <LineupDisplay lineup={lineup} wins={wins} />
+            </div>
+          )}
         </div>
       </div>
     </div>

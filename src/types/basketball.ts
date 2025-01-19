@@ -19,4 +19,4 @@ export type Lineup = {
   [key in Position]?: Player;
 };
 
-export type GameMode = "classic" | "positionless" | "budget";
+export type GameMode = "classic" | "budget";

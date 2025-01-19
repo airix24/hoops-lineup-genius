@@ -33,12 +33,6 @@ export const GameModeSelector = ({
             Classic Mode
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => onModeSelect("positionless")}
-            className={currentMode === "positionless" ? "bg-accent" : ""}
-          >
-            Positionless Mode
-          </DropdownMenuItem>
-          <DropdownMenuItem
             onClick={() => onModeSelect("budget")}
             className={currentMode === "budget" ? "bg-accent" : ""}
           >
