@@ -54,14 +54,14 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
           {["PG", "SG", "SF", "PF", "C"].map((position) => (
             <div key={position} className="flex items-center gap-4">
               <span className="font-medium w-12">{position}:</span>
-              {lineup[position] ? (
+              {lineup[position as Position] ? (
                 <>
                   <img
-                    src={lineup[position].imageUrl}
-                    alt={lineup[position].name}
+                    src={lineup[position as Position]!.imageUrl}
+                    alt={lineup[position as Position]!.name}
                     className="w-8 h-10 object-cover"
                   />
-                  <span>{lineup[position].name}</span>
+                  <span>{lineup[position as Position]!.name}</span>
                 </>
               ) : (
                 <span className="text-gray-400">Empty</span>
@@ -113,7 +113,7 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
           <div className="border-t pt-4">
             <h3 className="text-lg font-semibold mb-2">Position Coverage</h3>
             <div className="space-y-2">
-              {["PG", "SG", "SF", "PF", "C"].map((pos) => (
+              {(["PG", "SG", "SF", "PF", "C"] as Position[]).map((pos) => (
                 <div key={pos} className="flex items-center gap-2">
                   <span className="w-10 font-medium">{pos}:</span>
                   {positionCoverage.covered.includes(pos) ? (
