@@ -1,6 +1,6 @@
 import { Lineup } from "@/types/basketball";
 import { Card } from "@/components/ui/card";
-import { calculateTeamRating } from "@/data/players";
+import { calculateTeamRating, calculatePositionCoverageScore } from "@/data/players";
 
 interface LineupDisplayProps {
   lineup: Lineup;
@@ -23,6 +23,11 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
           mode
         )
       : 0;
+
+  // Calculate position coverage penalty for positionless mode
+  const positionPenalty = mode === "positionless" && selectedPlayers.length === 5
+    ? calculatePositionCoverageScore(selectedPlayers)
+    : 0;
 
   if (mode === "classic") {
     return (
@@ -87,7 +92,14 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
       {wins > 0 && (
         <div className="mt-6 space-y-4">
           <div className="text-center">
-            <p className="text-xl font-bold">Projected Record</p>
+            <p className="text-xl font-bold">Team Rating</p>
+            <div className="flex justify-center items-center gap-2">
+              <span className="text-2xl text-nba-blue">{selectedPlayers.reduce((sum, player) => sum + player.main, 0)}</span>
+              {positionPenalty !== 0 && (
+                <span className="text-red-500">({positionPenalty})</span>
+              )}
+            </div>
+            <p className="text-xl font-bold mt-4">Projected Record</p>
             <p className="text-2xl text-nba-blue">
               {wins}-{82 - wins}
             </p>

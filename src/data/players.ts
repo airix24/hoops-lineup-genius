@@ -688,7 +688,7 @@ export const getRandomPlayersForPosition = (position: Position): Player[] => {
   });
 };
 
-const calculatePositionCoverageScore = (players: Player[]): number => {
+export const calculatePositionCoverageScore = (players: Player[]): number => {
   // Track which positions are covered (either primary or secondary)
   const coveredPositions = new Set<Position>();
   
