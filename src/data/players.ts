@@ -33,17 +33,6 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/johnsma02.jpg",
   },
-  // {
-  //   id: "oscar",
-  //   name: "Oscar Robertson",
-  //   position: "PG",
-  //   tier: "legend",
-  //   spacing: 2,
-  //   defense: 3,
-  //   main: 10,
-  //   imageUrl:
-  //     "https://www.basketball-reference.com/req/202106291/images/headshots/roberos01.jpg",
-  // },
   {
     id: "shai",
     name: "Shai Gilgeous-Alexander",
@@ -699,36 +688,20 @@ export const getRandomPlayersForPosition = (position: Position): Player[] => {
   });
 };
 
-const calculatePositionDiversityBonus = (players: Player[]): number => {
-  const positionCounts = players.reduce((acc, player) => {
-    acc[player.position] = (acc[player.position] || 0) + 1;
-    return acc;
-  }, {} as Record<Position, number>);
+const calculatePositionCoverageScore = (players: Player[]): number => {
+  // Track which positions are covered (either primary or secondary)
+  const coveredPositions = new Set<Position>();
+  
+  players.forEach(player => {
+    // Add primary position
+    coveredPositions.add(player.position);
+    // Add secondary positions
+    player.secPositions.forEach(pos => coveredPositions.add(pos));
+  });
 
-  // Perfect diversity (one of each position) gets a +10 bonus
-  if (Object.keys(positionCounts).length === 5) {
-    return 10;
-  }
-
-  // All same position gets penalties based on position
-  if (Object.keys(positionCounts).length === 1) {
-    const position = Object.keys(positionCounts)[0] as Position;
-    switch (position) {
-      case "PG":
-      case "C":
-        return -15; // Severe penalty for all PG or all C
-      case "SG":
-      case "PF":
-        return -10; // Moderate penalty
-      case "SF":
-        return -5; // Lesser penalty for all SF
-      default:
-        return 0;
-    }
-  }
-
-  // For other combinations, give small bonuses based on diversity
-  return (Object.keys(positionCounts).length - 1) * 2;
+  // Calculate penalty based on missing positions
+  const missingPositions = 5 - coveredPositions.size; // 5 is total number of unique positions
+  return missingPositions * -3; // -3 points penalty per missing position
 };
 
 export const calculateTeamRating = (
@@ -768,10 +741,12 @@ export const calculateTeamRating = (
 
     // Calculate base score from main ratings
     const totalScore = players.reduce((sum, player) => sum + player.main, 0);
-
-    // Add position diversity bonus/penalty
-    const diversityBonus = calculatePositionDiversityBonus(players);
-    const adjustedScore = totalScore + diversityBonus;
+    
+    // Calculate position coverage penalty
+    const coverageScore = calculatePositionCoverageScore(players);
+    
+    // Add position coverage score to total
+    const adjustedScore = totalScore + coverageScore;
 
     // Use the same win calculation logic but with adjusted score
     const minScore = 25;
@@ -782,6 +757,7 @@ export const calculateTeamRating = (
       1
     );
 
-    return Math.round(winPercentage * 82);
+    // Ensure we don't return negative wins
+    return Math.max(0, Math.round(winPercentage * 82));
   }
 };
