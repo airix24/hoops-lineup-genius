@@ -753,7 +753,7 @@ export const calculateTeamRating = (
     const maxScore = 45;
 
     const winPercentage = Math.min(
-      0.67 + ((adjustedScore - minScore) / (maxScore - minScore)) * 0.33,
+      Math.max(0, 0.67 + ((adjustedScore - minScore) / (maxScore - minScore)) * 0.33),
       1
     );
 
