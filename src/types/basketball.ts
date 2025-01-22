@@ -4,6 +4,7 @@ export type Player = {
   id: string;
   name: string;
   position: Position;
+  secPositions: Position[];
   tier: string;
   spacing: number;
   defense: number;
