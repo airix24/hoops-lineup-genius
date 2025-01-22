@@ -13,7 +13,15 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
   // Calculate the rating only if lineup is complete
   const rating =
     Object.keys(lineup).length === 5 || selectedPlayers.length === 5
-      ? calculateTeamRating(lineup as Required<Lineup>)
+      ? calculateTeamRating(
+          mode === "classic"
+            ? (lineup as Required<Lineup>)
+            : selectedPlayers.reduce((acc, player, index) => {
+                acc[`P${index + 1}` as keyof Lineup] = player;
+                return acc;
+              }, {} as Lineup),
+          mode
+        )
       : 0;
 
   if (mode === "classic") {
@@ -66,6 +74,7 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
               className="w-8 h-10 object-cover"
             />
             <span>{player.name}</span>
+            <span className="text-gray-500 ml-2">({player.position})</span>
           </div>
         ))}
         {Array.from({ length: Math.max(0, 5 - selectedPlayers.length) }).map((_, i) => (

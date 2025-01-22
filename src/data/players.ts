@@ -42,17 +42,6 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/roberos01.jpg",
   },
-  // {
-  //   id: "west",
-  //   name: "Jerry West",
-  //   position: "PG",
-  //   tier: "legend",
-  //   spacing: 2,
-  //   defense: 3,
-  //   main: 9,
-  //   imageUrl:
-  //     "https://www.basketball-reference.com/req/202106291/images/headshots/westje01.jpg",
-  // },
   {
     id: "shai",
     name: "Shai Gilgeous-Alexander",
@@ -341,17 +330,6 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/duranke01.jpg",
   },
-  // {
-  //   id: "julius",
-  //   name: "Julius Erving",
-  //   position: "SF",
-  //   tier: "legend",
-  //   spacing: 5,
-  //   defense: 2,
-  //   main: 10,
-  //   imageUrl:
-  //     "https://www.basketball-reference.com/req/202106291/images/headshots/ervinju01.jpg",
-  // },
   {
     id: "giannis",
     name: "Giannis Antetokounmpo",
@@ -574,17 +552,6 @@ export const players: Player[] = [
     imageUrl:
       "https://www.basketball-reference.com/req/202106291/images/headshots/jokicni01.jpg",
   },
-  // {
-  //   id: "moses",
-  //   name: "Moses Malone",
-  //   position: "C",
-  //   tier: "legend",
-  //   spacing: 1,
-  //   defense: 5,
-  //   main: 9,
-  //   imageUrl:
-  //     "https://www.basketball-reference.com/req/202106291/images/headshots/malonmo01.jpg",
-  // },
   {
     id: "wemby",
     name: "Victor Wembanyama",
@@ -677,30 +644,86 @@ export const getRandomPlayersForPosition = (position: Position): Player[] => {
   });
 };
 
-export const calculateTeamRating = (lineup: Lineup): number => {
-  if (!lineup.PG || !lineup.SG || !lineup.SF || !lineup.PF || !lineup.C) {
-    return 0;
+const calculatePositionDiversityBonus = (players: Player[]): number => {
+  const positionCounts = players.reduce((acc, player) => {
+    acc[player.position] = (acc[player.position] || 0) + 1;
+    return acc;
+  }, {} as Record<Position, number>);
+
+  // Perfect diversity (one of each position) gets a +10 bonus
+  if (Object.keys(positionCounts).length === 5) {
+    return 10;
   }
 
-  // Sum only main ratings
-  const totalScore =
-    lineup.PG.main +
-    lineup.SG.main +
-    lineup.SF.main +
-    lineup.PF.main +
-    lineup.C.main;
+  // All same position gets penalties based on position
+  if (Object.keys(positionCounts).length === 1) {
+    const position = Object.keys(positionCounts)[0] as Position;
+    switch (position) {
+      case "PG":
+      case "C":
+        return -15; // Severe penalty for all PG or all C
+      case "SG":
+      case "PF":
+        return -10; // Moderate penalty
+      case "SF":
+        return -5; // Lesser penalty for all SF
+      default:
+        return 0;
+    }
+  }
 
-  // A team with all 5-rated players (25 total) should win ~55 games
-  // A team with 45+ total should win all 82 games
-  const minScore = 25; // Score for a team of all 5-rated players
-  const maxScore = 45; // Threshold for perfect season
+  // For other combinations, give small bonuses based on diversity
+  return (Object.keys(positionCounts).length - 1) * 2;
+};
 
-  // Calculate win percentage based on total score, with 25 points = ~55 wins
-  const winPercentage = Math.min(
-    0.67 + ((totalScore - minScore) / (maxScore - minScore)) * 0.33,
-    1
-  );
+export const calculateTeamRating = (lineup: Lineup, mode: "classic" | "positionless" = "classic"): number => {
+  if (mode === "classic") {
+    if (!lineup.PG || !lineup.SG || !lineup.SF || !lineup.PF || !lineup.C) {
+      return 0;
+    }
 
-  // Convert to wins in an 82-game season
-  return Math.round(winPercentage * 82);
+    // Sum only main ratings for classic mode
+    const totalScore =
+      lineup.PG.main +
+      lineup.SG.main +
+      lineup.SF.main +
+      lineup.PF.main +
+      lineup.C.main;
+
+    // A team with all 5-rated players (25 total) should win ~55 games
+    // A team with 45+ total should win all 82 games
+    const minScore = 25; // Score for a team of all 5-rated players
+    const maxScore = 45; // Threshold for perfect season
+
+    // Calculate win percentage based on total score, with 25 points = ~55 wins
+    const winPercentage = Math.min(
+      0.67 + ((totalScore - minScore) / (maxScore - minScore)) * 0.33,
+      1
+    );
+
+    // Convert to wins in an 82-game season
+    return Math.round(winPercentage * 82);
+  } else {
+    // Positionless mode
+    const players = Object.values(lineup).filter(Boolean) as Player[];
+    if (players.length !== 5) return 0;
+
+    // Calculate base score from main ratings
+    const totalScore = players.reduce((sum, player) => sum + player.main, 0);
+    
+    // Add position diversity bonus/penalty
+    const diversityBonus = calculatePositionDiversityBonus(players);
+    const adjustedScore = totalScore + diversityBonus;
+
+    // Use the same win calculation logic but with adjusted score
+    const minScore = 25;
+    const maxScore = 45;
+
+    const winPercentage = Math.min(
+      0.67 + ((adjustedScore - minScore) / (maxScore - minScore)) * 0.33,
+      1
+    );
+
+    return Math.round(winPercentage * 82);
+  }
 };
