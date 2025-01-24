@@ -701,7 +701,7 @@ export const calculatePositionCoverageScore = (players: Player[]): number => {
 
   // Calculate penalty based on missing positions
   const missingPositions = 5 - coveredPositions.size; // 5 is total number of unique positions
-  return missingPositions * -3; // -3 points penalty per missing position
+  return missingPositions * -20; // -20% penalty per missing position
 };
 
 export const calculateTeamRating = (

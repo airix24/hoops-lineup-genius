@@ -112,6 +112,10 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
     ? calculatePositionCoverageScore(selectedPlayers)
     : 0;
 
+  // Calculate wins with and without penalty
+  const baseWins = wins;
+  const adjustedWins = Math.max(0, Math.round(wins * (1 + positionPenalty / 100))); // Convert penalty to percentage
+
   if (mode === "classic") {
     return (
       <Card className="p-6 w-full max-w-md">
@@ -163,8 +167,16 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
               alt={player.name}
               className="w-8 h-10 object-cover"
             />
-            <span>{player.name}</span>
-            <span className="text-gray-500 ml-2">({player.position})</span>
+            <div className="flex-1">
+              <span>{player.name}</span>
+              <div className="text-sm text-gray-500">
+                <span>Primary: {player.position}</span>
+                {player.secPositions.length > 0 && (
+                  <span> | Secondary: {player.secPositions.join(", ")}</span>
+                )}
+                <span className="block">Rating: {player.main}</span>
+              </div>
+            </div>
           </div>
         ))}
         {Array.from({ length: Math.max(0, 5 - selectedPlayers.length) }).map((_, i) => (
@@ -187,7 +199,7 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
                       Covered by: {positionCoverage.assignments.get(pos)?.join(", ")}
                     </span>
                   ) : (
-                    <span className="text-red-500">Not covered (-3)</span>
+                    <span className="text-red-500">Not covered (-20% wins)</span>
                   )}
                 </div>
               ))}
@@ -196,15 +208,22 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
           <div className="text-center border-t pt-4">
             <p className="text-xl font-bold">Team Rating</p>
             <div className="flex justify-center items-center gap-2">
-              <span className="text-2xl text-nba-blue">{selectedPlayers.reduce((sum, player) => sum + player.main, 0)}</span>
-              {positionPenalty !== 0 && (
-                <span className="text-red-500">({positionPenalty})</span>
-              )}
+              <span className="text-2xl text-nba-blue">
+                {selectedPlayers.reduce((sum, player) => sum + player.main, 0)}
+              </span>
             </div>
             <p className="text-xl font-bold mt-4">Projected Record</p>
-            <p className="text-2xl text-nba-blue">
-              {wins}-{82 - wins}
-            </p>
+            <div className="space-y-2">
+              <p className="text-lg">
+                Base Record: <span className="text-nba-blue">{baseWins}-{82 - baseWins}</span>
+              </p>
+              <p className="text-lg">
+                Position Penalty: <span className="text-red-500">{positionPenalty}%</span>
+              </p>
+              <p className="text-2xl text-nba-blue">
+                Final Record: {adjustedWins}-{82 - adjustedWins}
+              </p>
+            </div>
           </div>
         </div>
       )}
