@@ -26,39 +26,80 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
 
   // Calculate position coverage for positionless mode
   const getPositionCoverage = () => {
-    const coveredPositions = new Set<Position>();
-    const playerAssignments = new Map<Position, string[]>();
     const allPositions: Position[] = ["PG", "SG", "SF", "PF", "C"];
+    const playerAssignments = new Map<Position, string[]>();
     
     // Initialize playerAssignments map
     allPositions.forEach(pos => {
       playerAssignments.set(pos, []);
     });
 
-    // First pass: Try to assign players to their primary positions
-    selectedPlayers.forEach(player => {
-      if (!coveredPositions.has(player.position)) {
-        coveredPositions.add(player.position);
-        playerAssignments.get(player.position)?.push(player.name);
-      }
-    });
+    // Helper function to get all possible positions for a player
+    const getPlayerPositions = (player: any) => {
+      return [player.position, ...player.secPositions];
+    };
 
-    // Second pass: Try to fill remaining positions with secondary positions
-    selectedPlayers.forEach(player => {
-      if (!playerAssignments.get(player.position)?.includes(player.name)) {
-        // This player hasn't been assigned yet
-        for (const secPos of player.secPositions) {
-          if (!coveredPositions.has(secPos)) {
-            coveredPositions.add(secPos);
-            playerAssignments.get(secPos)?.push(player.name);
-            break; // Assign to first available secondary position
+    // Helper function to check if an assignment is valid
+    const isValidAssignment = (
+      assignments: Map<string, Position>,
+      player: any,
+      position: Position
+    ) => {
+      return getPlayerPositions(player).includes(position);
+    };
+
+    // Helper function to count covered positions
+    const countCoveredPositions = (assignments: Map<string, Position>) => {
+      const covered = new Set(Array.from(assignments.values()));
+      return covered.size;
+    };
+
+    // Try all possible combinations using backtracking
+    const findBestAssignment = () => {
+      const players = [...selectedPlayers];
+      let bestAssignment = new Map<string, Position>();
+      let maxCovered = 0;
+
+      const tryAssignments = (
+        currentAssignment: Map<string, Position>,
+        playerIndex: number
+      ) => {
+        if (playerIndex === players.length) {
+          const coveredCount = countCoveredPositions(currentAssignment);
+          if (coveredCount > maxCovered) {
+            maxCovered = coveredCount;
+            bestAssignment = new Map(currentAssignment);
+          }
+          return;
+        }
+
+        const player = players[playerIndex];
+        const possiblePositions = getPlayerPositions(player);
+
+        for (const pos of possiblePositions) {
+          if (isValidAssignment(currentAssignment, player, pos)) {
+            const newAssignment = new Map(currentAssignment);
+            newAssignment.set(player.name, pos);
+            tryAssignments(newAssignment, playerIndex + 1);
           }
         }
-      }
+      };
+
+      tryAssignments(new Map(), 0);
+      return bestAssignment;
+    };
+
+    // Get the best assignment
+    const bestAssignment = findBestAssignment();
+
+    // Convert the best assignment to our playerAssignments format
+    bestAssignment.forEach((position, playerName) => {
+      playerAssignments.get(position)?.push(playerName);
     });
-    
+
+    const coveredPositions = new Set(Array.from(bestAssignment.values()));
     const missingPositions = allPositions.filter(pos => !coveredPositions.has(pos));
-    
+
     return {
       covered: Array.from(coveredPositions),
       missing: missingPositions,
