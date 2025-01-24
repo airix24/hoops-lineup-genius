@@ -27,17 +27,42 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
   // Calculate position coverage for positionless mode
   const getPositionCoverage = () => {
     const coveredPositions = new Set<Position>();
+    const playerAssignments = new Map<Position, string[]>();
+    const allPositions: Position[] = ["PG", "SG", "SF", "PF", "C"];
+    
+    // Initialize playerAssignments map
+    allPositions.forEach(pos => {
+      playerAssignments.set(pos, []);
+    });
+
+    // First pass: Try to assign players to their primary positions
     selectedPlayers.forEach(player => {
-      coveredPositions.add(player.position);
-      player.secPositions.forEach((pos: Position) => coveredPositions.add(pos));
+      if (!coveredPositions.has(player.position)) {
+        coveredPositions.add(player.position);
+        playerAssignments.get(player.position)?.push(player.name);
+      }
+    });
+
+    // Second pass: Try to fill remaining positions with secondary positions
+    selectedPlayers.forEach(player => {
+      if (!playerAssignments.get(player.position)?.includes(player.name)) {
+        // This player hasn't been assigned yet
+        for (const secPos of player.secPositions) {
+          if (!coveredPositions.has(secPos)) {
+            coveredPositions.add(secPos);
+            playerAssignments.get(secPos)?.push(player.name);
+            break; // Assign to first available secondary position
+          }
+        }
+      }
     });
     
-    const allPositions: Position[] = ["PG", "SG", "SF", "PF", "C"];
     const missingPositions = allPositions.filter(pos => !coveredPositions.has(pos));
     
     return {
       covered: Array.from(coveredPositions),
-      missing: missingPositions
+      missing: missingPositions,
+      assignments: playerAssignments
     };
   };
 
@@ -51,17 +76,17 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
       <Card className="p-6 w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 text-center">Your Lineup</h2>
         <div className="space-y-4">
-          {["PG", "SG", "SF", "PF", "C"].map((position) => (
+          {(["PG", "SG", "SF", "PF", "C"] as Position[]).map((position) => (
             <div key={position} className="flex items-center gap-4">
               <span className="font-medium w-12">{position}:</span>
-              {lineup[position as Position] ? (
+              {lineup[position] ? (
                 <>
                   <img
-                    src={lineup[position as Position]!.imageUrl}
-                    alt={lineup[position as Position]!.name}
+                    src={lineup[position]!.imageUrl}
+                    alt={lineup[position]!.name}
                     className="w-8 h-10 object-cover"
                   />
-                  <span>{lineup[position as Position]!.name}</span>
+                  <span>{lineup[position]!.name}</span>
                 </>
               ) : (
                 <span className="text-gray-400">Empty</span>
@@ -116,11 +141,9 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
               {(["PG", "SG", "SF", "PF", "C"] as Position[]).map((pos) => (
                 <div key={pos} className="flex items-center gap-2">
                   <span className="w-10 font-medium">{pos}:</span>
-                  {positionCoverage.covered.includes(pos) ? (
+                  {positionCoverage.assignments.get(pos)?.length ? (
                     <span className="text-green-600">
-                      Covered by: {selectedPlayers.filter(p => 
-                        p.position === pos || p.secPositions.includes(pos)
-                      ).map(p => p.name).join(", ")}
+                      Covered by: {positionCoverage.assignments.get(pos)?.join(", ")}
                     </span>
                   ) : (
                     <span className="text-red-500">Not covered (-3)</span>
