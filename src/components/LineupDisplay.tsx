@@ -1,6 +1,9 @@
 import { Lineup, Position } from "@/types/basketball";
 import { Card } from "@/components/ui/card";
-import { calculateTeamRating, calculatePositionCoverageScore } from "@/data/players";
+import {
+  calculateTeamRating,
+  calculatePositionCoverageScore,
+} from "@/data/players";
 
 interface LineupDisplayProps {
   lineup: Lineup;
@@ -9,7 +12,12 @@ interface LineupDisplayProps {
   selectedPlayers?: any[];
 }
 
-export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: LineupDisplayProps) => {
+export const LineupDisplay = ({
+  lineup,
+  wins,
+  mode,
+  selectedPlayers = [],
+}: LineupDisplayProps) => {
   // Calculate the rating only if lineup is complete
   const rating =
     Object.keys(lineup).length === 5 || selectedPlayers.length === 5
@@ -28,9 +36,9 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
   const getPositionCoverage = () => {
     const allPositions: Position[] = ["PG", "SG", "SF", "PF", "C"];
     const playerAssignments = new Map<Position, string[]>();
-    
+
     // Initialize playerAssignments map
-    allPositions.forEach(pos => {
+    allPositions.forEach((pos) => {
       playerAssignments.set(pos, []);
     });
 
@@ -98,24 +106,30 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
     });
 
     const coveredPositions = new Set(Array.from(bestAssignment.values()));
-    const missingPositions = allPositions.filter(pos => !coveredPositions.has(pos));
+    const missingPositions = allPositions.filter(
+      (pos) => !coveredPositions.has(pos)
+    );
 
     return {
       covered: Array.from(coveredPositions),
       missing: missingPositions,
-      assignments: playerAssignments
+      assignments: playerAssignments,
     };
   };
 
   // Calculate position penalty for positionless mode
-  const positionPenalty = mode === "positionless" && selectedPlayers.length === 5
-    ? calculatePositionCoverageScore(selectedPlayers)
-    : 0;
+  const positionPenalty =
+    mode === "positionless" && selectedPlayers.length === 5
+      ? calculatePositionCoverageScore(selectedPlayers)
+      : 0;
 
   // Calculate wins with and without penalty
   const baseWins = wins;
   // Apply penalty as a reduction in wins
-  const adjustedWins = Math.max(0, Math.round(baseWins * (1 - Math.abs(positionPenalty) / 100))); // Convert penalty to percentage
+  const adjustedWins = Math.max(
+    0,
+    Math.round(baseWins * (1 - Math.abs(positionPenalty) / 100))
+  ); // Convert penalty to percentage
 
   if (mode === "classic") {
     return (
@@ -168,63 +182,27 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
               alt={player.name}
               className="w-8 h-10 object-cover"
             />
-            <div className="flex-1">
-              <span>{player.name}</span>
-              <div className="text-sm text-gray-500">
-                <span>Primary: {player.position}</span>
-                {player.secPositions.length > 0 && (
-                  <span> | Secondary: {player.secPositions.join(", ")}</span>
-                )}
-                <span className="block">Rating: {player.main}</span>
-              </div>
+            <span>{player.name}</span>
+          </div>
+        ))}
+        {Array.from({ length: Math.max(0, 5 - selectedPlayers.length) }).map(
+          (_, i) => (
+            <div key={`empty-${i}`} className="flex items-center gap-4">
+              <span className="font-medium w-12">
+                #{selectedPlayers.length + i + 1}
+              </span>
+              <span className="text-gray-400">Empty</span>
             </div>
-          </div>
-        ))}
-        {Array.from({ length: Math.max(0, 5 - selectedPlayers.length) }).map((_, i) => (
-          <div key={`empty-${i}`} className="flex items-center gap-4">
-            <span className="font-medium w-12">#{selectedPlayers.length + i + 1}</span>
-            <span className="text-gray-400">Empty</span>
-          </div>
-        ))}
+          )
+        )}
       </div>
       {selectedPlayers.length === 5 && (
         <div className="mt-6 space-y-4">
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-semibold mb-2">Position Coverage</h3>
-            <div className="space-y-2">
-              {(["PG", "SG", "SF", "PF", "C"] as Position[]).map((pos) => (
-                <div key={pos} className="flex items-center gap-2">
-                  <span className="w-10 font-medium">{pos}:</span>
-                  {positionCoverage.assignments.get(pos)?.length ? (
-                    <span className="text-green-600">
-                      Covered by: {positionCoverage.assignments.get(pos)?.join(", ")}
-                    </span>
-                  ) : (
-                    <span className="text-red-500">Not covered (-20% wins)</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="text-center border-t pt-4">
-            <p className="text-xl font-bold">Team Rating</p>
-            <div className="flex justify-center items-center gap-2">
-              <span className="text-2xl text-nba-blue">
-                {selectedPlayers.reduce((sum, player) => sum + player.main, 0)}
-              </span>
-            </div>
-            <p className="text-xl font-bold mt-4">Projected Record</p>
-            <div className="space-y-2">
-              <p className="text-lg">
-                Base Record: <span className="text-nba-blue">{baseWins}-{82 - baseWins}</span>
-              </p>
-              <p className="text-lg">
-                Position Penalty: <span className="text-red-500">{positionPenalty}%</span>
-              </p>
-              <p className="text-2xl text-nba-blue">
-                Final Record: {adjustedWins}-{82 - adjustedWins}
-              </p>
-            </div>
+          <div className="text-center">
+            <p className="text-xl font-bold">Projected Record</p>
+            <p className="text-2xl text-nba-blue">
+              {adjustedWins}-{82 - adjustedWins}
+            </p>
           </div>
         </div>
       )}
