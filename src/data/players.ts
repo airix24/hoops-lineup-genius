@@ -675,6 +675,19 @@ export const players: Player[] = [
   },
 ];
 
+export const getRandomPlayersForPosition = (position: Position): Player[] => {
+  const positionPlayers = players.filter((p) => p.position === position);
+
+  // Roll for each tier
+  const tierRoll = Math.random();
+
+  return positionPlayers.filter((player) => {
+    const tierChance =
+      TIER_CHANCES[player.tier as keyof typeof TIER_CHANCES] ?? 1;
+    return tierRoll < tierChance;
+  });
+};
+
 export const calculatePositionCoverageScore = (players: Player[]): number => {
   // Track which positions are covered (either primary or secondary)
   const coveredPositions = new Set<Position>();
