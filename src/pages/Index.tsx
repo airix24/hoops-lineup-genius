@@ -17,27 +17,42 @@ const getRandomPositionlessPlayers = (usedPlayerIds: Set<string>) => {
   const availablePlayers = players.filter(
     (player) => !usedPlayerIds.has(player.id)
   );
+  const selectedIds = new Set<string>();
 
-  // Apply rarity filtering similar to classic mode
-  const tierRoll = Math.random();
-  const filteredPlayers = availablePlayers.filter((player) => {
-    switch (player.tier) {
-      case "goat":
-        return tierRoll < 0.05; // 5% chance
-      case "legend":
-        return tierRoll < 0.15; // 15% chance
-      case "star":
-        return tierRoll < 0.4; // 40% chance
-      default:
-        return true; // regular players always included
-    }
-  });
+  // Get 5 players, each with their own rarity roll
+  return Array(5)
+    .fill(null)
+    .map(() => {
+      const tierRoll = Math.random();
+      const filteredPlayers = availablePlayers.filter((player) => {
+        // Filter out already selected players and apply tier rules
+        if (selectedIds.has(player.id)) return false;
 
-  // If no players pass the rarity filter, return from all available players
-  const playersToChooseFrom = filteredPlayers.length > 0 ? filteredPlayers : availablePlayers;
-  
-  const shuffled = [...playersToChooseFrom].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, 5);
+        switch (player.tier) {
+          case "goat":
+            return tierRoll < 0.05; // 5% chance
+          case "legend":
+            return tierRoll < 0.15; // 15% chance
+          case "star":
+            return tierRoll < 0.4; // 40% chance
+          default:
+            return true; // regular players always included
+        }
+      });
+
+      // If no players pass the rarity filter, use all unselected available players
+      const playersToChooseFrom =
+        filteredPlayers.length > 0
+          ? filteredPlayers
+          : availablePlayers.filter((p) => !selectedIds.has(p.id));
+
+      const randomIndex = Math.floor(
+        Math.random() * playersToChooseFrom.length
+      );
+      const selectedPlayer = playersToChooseFrom[randomIndex];
+      selectedIds.add(selectedPlayer.id);
+      return selectedPlayer;
+    });
 };
 
 const getInitialClassicPlayers = () => {
@@ -67,7 +82,7 @@ const Index = () => {
       setLineup(newLineup);
 
       const selectedPositionsCount = Object.keys(newLineup).length;
-      
+
       if (selectedPositionsCount === 5) {
         const rating = calculateTeamRating(newLineup as Required<Lineup>);
         setWins(rating);
@@ -104,7 +119,9 @@ const Index = () => {
       });
 
       setUsedPlayerIds((prev) => new Set([...prev, player.id]));
-      setAvailablePlayers(getRandomPositionlessPlayers(new Set([...usedPlayerIds, player.id])));
+      setAvailablePlayers(
+        getRandomPositionlessPlayers(new Set([...usedPlayerIds, player.id]))
+      );
       setRerollCount((count) => count + 1);
     }
   };
@@ -161,11 +178,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-6 sm:py-12 px-2 sm:px-4">
-      <GameModeSelector currentMode={gameMode} onModeSelect={handleModeSelect} />
+      <GameModeSelector
+        currentMode={gameMode}
+        onModeSelect={handleModeSelect}
+      />
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-nba-blue mb-2">
-            {gameMode === "classic" ? "Build Your Dream Team" : "Positionless Basketball"}
+            {gameMode === "classic"
+              ? "Build Your Dream Team"
+              : "Positionless Basketball"}
           </h1>
         </div>
 
@@ -201,11 +223,13 @@ const Index = () => {
             )}
           </div>
           <div className="flex justify-center">
-            <LineupDisplay 
-              lineup={lineup} 
-              wins={wins} 
+            <LineupDisplay
+              lineup={lineup}
+              wins={wins}
               mode={gameMode}
-              selectedPlayers={gameMode === "positionless" ? selectedPlayers : undefined}
+              selectedPlayers={
+                gameMode === "positionless" ? selectedPlayers : undefined
+              }
             />
           </div>
         </div>

@@ -691,12 +691,12 @@ export const getRandomPlayersForPosition = (position: Position): Player[] => {
 export const calculatePositionCoverageScore = (players: Player[]): number => {
   // Track which positions are covered (either primary or secondary)
   const coveredPositions = new Set<Position>();
-  
-  players.forEach(player => {
+
+  players.forEach((player) => {
     // Add primary position
     coveredPositions.add(player.position);
     // Add secondary positions
-    player.secPositions.forEach(pos => coveredPositions.add(pos));
+    player.secPositions.forEach((pos) => coveredPositions.add(pos));
   });
 
   // Calculate penalty based on missing positions
@@ -713,7 +713,6 @@ export const calculateTeamRating = (
       return 0;
     }
 
-    // Sum only main ratings for classic mode
     const totalScore =
       lineup.PG.main +
       lineup.SG.main +
@@ -721,43 +720,32 @@ export const calculateTeamRating = (
       lineup.PF.main +
       lineup.C.main;
 
-    // A team with all 5-rated players (25 total) should win ~55 games
-    // A team with 45+ total should win all 82 games
-    const minScore = 25; // Score for a team of all 5-rated players
-    const maxScore = 45; // Threshold for perfect season
-
-    // Calculate win percentage based on total score, with 25 points = ~55 wins
-    const winPercentage = Math.min(
+    const minScore = 25;
+    const maxScore = 45;
+    const rawWinPercentage = totalScore / maxScore;
+    const adjustedWinPercentage = Math.min(
       0.67 + ((totalScore - minScore) / (maxScore - minScore)) * 0.33,
       1
     );
-
-    // Convert to wins in an 82-game season
-    return Math.round(winPercentage * 82);
+    return Math.round(adjustedWinPercentage * 82);
   } else {
-    // Positionless mode
     const players = Object.values(lineup).filter(Boolean) as Player[];
     if (players.length !== 5) return 0;
 
-    // Calculate base score from main ratings
     const totalScore = players.reduce((sum, player) => sum + player.main, 0);
-    
-    // Calculate position coverage penalty
     const coverageScore = calculatePositionCoverageScore(players);
-    
-    // Add position coverage score to total
     const adjustedScore = totalScore + coverageScore;
 
-    // Use the same win calculation logic but with adjusted score
     const minScore = 25;
     const maxScore = 45;
-
-    const winPercentage = Math.min(
-      Math.max(0, 0.67 + ((adjustedScore - minScore) / (maxScore - minScore)) * 0.33),
+    const adjustedWinPercentage = Math.min(
+      Math.max(
+        0,
+        0.67 + ((adjustedScore - minScore) / (maxScore - minScore)) * 0.33
+      ),
       1
     );
 
-    // Ensure we don't return negative wins
-    return Math.max(0, Math.round(winPercentage * 82));
+    return Math.max(0, Math.round(adjustedWinPercentage * 82));
   }
 };
