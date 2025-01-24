@@ -675,19 +675,6 @@ export const players: Player[] = [
   },
 ];
 
-export const getRandomPlayersForPosition = (position: Position): Player[] => {
-  const positionPlayers = players.filter((p) => p.position === position);
-
-  // Roll for each tier
-  const tierRoll = Math.random();
-
-  return positionPlayers.filter((player) => {
-    const tierChance =
-      TIER_CHANCES[player.tier as keyof typeof TIER_CHANCES] ?? 1;
-    return tierRoll < tierChance;
-  });
-};
-
 export const calculatePositionCoverageScore = (players: Player[]): number => {
   // Track which positions are covered (either primary or secondary)
   const coveredPositions = new Set<Position>();
@@ -701,8 +688,7 @@ export const calculatePositionCoverageScore = (players: Player[]): number => {
 
   // Calculate penalty based on missing positions
   const missingPositions = 5 - coveredPositions.size; // 5 is total number of unique positions
-  // First missing position: -10%, additional missing positions: -20% each
-  return missingPositions === 1 ? -10 : missingPositions * -20;
+  return missingPositions * -20; // -20% penalty per missing position
 };
 
 export const calculateTeamRating = (

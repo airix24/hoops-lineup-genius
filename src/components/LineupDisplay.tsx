@@ -115,7 +115,7 @@ export const LineupDisplay = ({ lineup, wins, mode, selectedPlayers = [] }: Line
   // Calculate wins with and without penalty
   const baseWins = wins;
   // Apply penalty as a reduction in wins
-  const adjustedWins = Math.max(0, Math.round(wins * (1 - Math.abs(positionPenalty) / 100))); // Convert penalty to percentage
+  const adjustedWins = Math.max(0, Math.round(baseWins * (1 - Math.abs(positionPenalty) / 100))); // Convert penalty to percentage
 
   if (mode === "classic") {
     return (
